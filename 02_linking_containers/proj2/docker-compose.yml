@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+    pinger:
+        build: ./app
+        container_name: pinger
+        volumes:
+            - ./app/pinger.py:/usr/src/app/pinger.py
+networks:
+  default:
+    external:
+      name: statuschecker_frontend

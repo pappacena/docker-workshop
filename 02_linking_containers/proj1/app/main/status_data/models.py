@@ -9,5 +9,5 @@ class Status(models.Model):
 
     def to_dict(self):
         data = {k: getattr(self, k) for k in ["app", "sensor", "value"]}
-        data["created_at"] = self.created_at.isoformat()
+        data["date"] = self.date.isoformat()
         return data

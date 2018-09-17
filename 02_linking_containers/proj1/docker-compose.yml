@@ -4,6 +4,8 @@ services:
         build: ./app
         container_name: statuschecker
         command: python manage.py runserver 0:8000
+        depends_on:
+          - main_database
         volumes:
             - ./app:/usr/src/app
         environment:
@@ -16,9 +18,17 @@ services:
             DB_HOST: "main_database"
         ports:
             - "8000:8000"
+        networks:
+          - default
+          - statuschecker_frontend
     main_database:
         image: mysql:5
         command: mysqld --default-authentication-plugin=mysql_native_password
         environment:
           MYSQL_ROOT_PASSWORD: "muriqui79"
           MYSQL_DATABASE:  "test_db"
+
+networks:
+  statuschecker_frontend:
+    name: statuschecker_frontend
+    driver: bridge
