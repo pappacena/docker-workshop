@@ -1,0 +1,24 @@
+version: '3.5'
+services:
+    app:
+        build: ./app
+        container_name: statuschecker
+        command: python manage.py runserver 0:8000
+        volumes:
+            - ./app:/usr/src/app
+        environment:
+            # pytest should be used only for unit tests
+            PYTEST_ADDOPTS: "-k 'not integration'"
+            DEBUG: "true"
+            DB_NAME: "test_db"
+            DB_USER: "root"
+            DB_PASS: "muriqui79"
+            DB_HOST: "main_database"
+        ports:
+            - "8000:8000"
+    main_database:
+        image: mysql:5
+        command: mysqld --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQL_ROOT_PASSWORD: "muriqui79"
+          MYSQL_DATABASE:  "test_db"

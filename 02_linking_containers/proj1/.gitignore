@@ -1,0 +1,7 @@
+*.pyc
+__pycache__
+.pytest_cache
+.DS_Store
+*.sqlite3
+.coverage
+htmlcov

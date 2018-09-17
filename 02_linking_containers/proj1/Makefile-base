@@ -1,0 +1,32 @@
+startapp:
+	docker-compose run --rm app python manage.py startapp $(APP)
+	@echo "Mudando permissões dos arquivos gerados. Talvez eu precise da sua senha:"
+	@sudo chown -R `whoami` app/main/$(APP)/
+	rm app/main/$(APP)/tests.py
+	mkdir -p app/main/$(APP)/tests/unit app/main/$(APP)/tests/integration
+	touch app/main/$(APP)/tests/__init__.py app/main/$(APP)/tests/unit/__init__.py app/main/$(APP)/tests/integration/__init__.py
+
+test:
+	docker-compose run --rm app python manage.py test -n
+
+unittest:
+	docker-compose run --rm app pytest
+
+shell:
+	docker-compose run --rm app python manage.py shell
+
+bash:
+	docker-compose run --rm app bash
+
+collect-coverage:
+	docker-compose run --rm app coverage run --source='.' --omit="conftest.py,*testrunner.py,*/tests/*,*/tests.py,manage.py,*wsgi.py*,*/apps.py" manage.py test -n
+
+coverage-shell: collect-coverage
+	docker-compose run --rm app coverage report
+
+coverage-html: collect-coverage
+	docker-compose run --rm app coverage html
+	xdg-open app/main/htmlcov/index.html || open app/main/htmlcov/index.html
+
+coverage-percent: collect-coverage
+	docker-compose run --rm app coverage report | tail -n 1 | tr -s ' ' | cut -d ' ' -f 4
